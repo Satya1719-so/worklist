@@ -1,49 +1,67 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-
-import 'app_screens/home.dart';
-
 void main(){
-  runApp(MaterialApp(
-    title: "exploring",
-    home:Scaffold(
-      appBar: AppBar(title: Text("wellcome"),),
-      body: getListview(),
-      floatingActionButton: FloatingActionButton(onPressed:() {
-        debugPrint("FAB clicked");
-      },
-      child: Icon(Icons.add),
-      tooltip: 'add new list',),
-      ) ,
-  ));
-}
-void showSnackBar(BuildContext context, String item){
-  var snackBar = SnackBar(content: Text(" you clicked $item"),
-  action: SnackBarAction(label: "undo",
-  onPressed: (){
-    debugPrint("perform");
-  },),
+  runApp(
+    MaterialApp(
+      title: "new work",
+      home: Favorite(),)
+
   );
-  // ignore: deprecated_member_use
-  Scaffold.of(context).showSnackBar(snackBar);
 }
-  List<String>getListElement(){
-    var items =List<String>.generate(1000, (counter) => "Item $counter");
-    return items;
-  
+class Favorite extends StatefulWidget{
+  @override
+  State<StatefulWidget> createState() {
+    return _FavoriteState();
+  }
+
 }
-Widget getListview(){
-  var listItems=getListElement();
-  var listview= ListView.builder(itemBuilder:(context,index){
-    return ListTile(
-      leading: Icon(Icons.arrow_right),
-    title: Text(listItems[index]),
-    onTap: (){
-      showSnackBar(context,listItems[index]);
-    },
-    );
+class _FavoriteState extends State<Favorite>{
+  String nameCity = "";
+  var _currencies = ['Rupees','Dollar','pounds','other'];
+  var _currentItemSelected ='Rupees';
+  @override
+  Widget build(BuildContext context) {
+   return Scaffold(
+     appBar: AppBar(
+       title: Text("new worklist"),
+       ),
+       body: Container(
+         margin: EdgeInsets.all(20.0),
+         child: Column(
+           children:<Widget>[
+             TextField(
+               onChanged: (String userInput){
+                 setState(() {
+                   nameCity=userInput;
+                 });
+                
+               },
+             ),
+             DropdownButton<String>(
+               items: _currencies.map((String dropDownStringItem){
+               return DropdownMenuItem<String>(
+                 value:dropDownStringItem,
+                 child:Text(dropDownStringItem),
+
+               );
+             }).toList(),
+             onChanged: (String? newValue){
+               _onDropdown(newValue!);
+               
+             },
+             value: _currentItemSelected,
+             ),
+             Padding(
+               padding: EdgeInsets.all(30.0),
+               child: Text("your city $nameCity",
+             style: TextStyle(fontSize: 20),
+             ))
+           ],
+         ),),
+   );
   }
-  );
-  return listview;
+  void _onDropdown(String newValue) {
+    setState(() {
+                 this. _currentItemSelected = newValue;
+               });
   }
+}
